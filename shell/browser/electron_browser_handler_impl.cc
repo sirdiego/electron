@@ -28,10 +28,6 @@ ElectronBrowserHandlerImpl::~ElectronBrowserHandlerImpl() = default;
 
 void ElectronBrowserHandlerImpl::BindTo(
     mojo::PendingReceiver<mojom::ElectronBrowser> receiver) {
-  // Note: BindTo might be called for multiple times.
-  if (receiver_.is_bound())
-    receiver_.reset();
-
   receiver_.Bind(std::move(receiver));
   receiver_.set_disconnect_handler(base::BindOnce(
       &ElectronBrowserHandlerImpl::OnConnectionError, GetWeakPtr()));
@@ -137,7 +133,7 @@ void ElectronBrowserHandlerImpl::DoGetZoomLevel(
   }
 }
 
-content::RenderFrameHost* GetRenderFrameHost() {
+content::RenderFrameHost* ElectronBrowserHandlerImpl::GetRenderFrameHost() {
   return content::RenderFrameHost::FromID(render_process_id_, render_frame_id_);
 }
 
